@@ -1,0 +1,12 @@
+{% extends 'base.html' %}{% block body %}
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+{% for l,v in [('Attendance (finalized)',pct~'%'),('Total lectures',n),('Present',tot['Present']),('Absent',tot['Absent'])] %}
+<div class="bg-white rounded-xl p-4 shadow"><div class="text-sm text-slate-500">{{ l }}</div><div class="text-3xl font-bold">{{ v }}</div></div>{% endfor %}</div>
+<h2 class="font-semibold mb-2">Subject-wise</h2><div class="bg-white rounded-xl shadow overflow-x-auto mb-6"><table class="w-full text-sm">
+<tr class="bg-slate-50 text-left"><th class="p-2">Subject</th><th>Lectures</th><th>Present</th><th>%</th></tr>
+{% for k,d in subj.items() %}<tr class="border-t"><td class="p-2">{{ k }}</td><td>{{ d.n }}</td><td>{{ d['Present'] }}</td><td>{{ (100*d['Present']/d.n)|round(1) }}%</td></tr>{% endfor %}</table></div>
+<h2 class="font-semibold mb-2">History</h2><div class="bg-white rounded-xl shadow overflow-x-auto"><table class="w-full text-sm">
+<tr class="bg-slate-50 text-left"><th class="p-2">Date</th><th>Subject</th><th>Lecture</th><th>Status</th></tr>
+{% for s,r in rows %}<tr class="border-t"><td class="p-2">{{ s.date }}</td><td>{{ s.subject.name }}</td><td>{{ s.lecture }}</td>
+<td>{{ r.status }}{% if s.status!='finalized' %} <em class="text-xs text-amber-600">(provisional)</em>{% endif %}</td></tr>{% endfor %}</table></div>
+{% endblock %}

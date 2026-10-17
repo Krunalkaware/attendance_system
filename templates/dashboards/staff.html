@@ -1,0 +1,13 @@
+{% extends 'base.html' %}{% block body %}
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+{% for l,v in [('Students',total),("Today's sessions",today|length),('Awaiting review',review|length),('Recent sessions',recent|length)] %}
+<div class="bg-white rounded-xl p-4 shadow"><div class="text-sm text-slate-500">{{ l }}</div><div class="text-3xl font-bold">{{ v }}</div></div>{% endfor %}</div>
+<div class="grid sm:grid-cols-3 gap-3 mb-6">
+<a href="{{ url_for('attendance.start',mode='voice_roll') }}" class="bg-indigo-600 text-white rounded-xl p-4 text-center font-semibold">🎤 Voice Attendance</a>
+<a href="{{ url_for('attendance.start',mode='call') }}" class="bg-emerald-600 text-white rounded-xl p-4 text-center font-semibold">📣 Call & Confirm</a>
+<a href="{{ url_for('attendance.start',mode='manual') }}" class="bg-slate-700 text-white rounded-xl p-4 text-center font-semibold">✋ Manual</a></div>
+<h2 class="font-semibold mb-2">Recent sessions</h2>
+<div class="bg-white rounded-xl shadow overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-left"><tr><th class="p-2">Date</th><th>Subject</th><th>Lec</th><th>Status</th><th></th></tr></thead>
+{% for s in recent %}<tr class="border-t"><td class="p-2">{{ s.date }}</td><td>{{ s.subject.name }}</td><td>{{ s.lecture }}</td><td>{{ s.status.replace('_',' ') }}</td>
+<td><a class="text-indigo-600" href="{{ url_for('attendance.session_view',i=s.id,mode='manual') }}">Open</a></td></tr>{% else %}<tr><td class="p-3" colspan="5">No sessions yet.</td></tr>{% endfor %}</table></div>
+{% endblock %}

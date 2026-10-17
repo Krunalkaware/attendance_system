@@ -1,0 +1,22 @@
+{% extends 'base.html' %}{% block body %}
+<div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+<div><h1 class="text-xl font-bold">{{ s.subject.name }} – Lecture {{ s.lecture }}</h1><div class="text-sm text-slate-500">{{ s.date }} · {{ MODES.get(data.mode,'Manual') }} · <b id="st">{{ s.status.replace('_',' ') }}</b></div></div>
+<div class="flex gap-1 text-sm">{% for k,v in MODES.items() %}<a class="px-2 py-1 rounded {{ 'bg-indigo-600 text-white' if k==data.mode else 'bg-white' }}" href="?mode={{ k }}">{{ v }}</a>{% endfor %}</div></div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3 text-center">
+<div class="bg-green-100 rounded p-2">Present <b id="cP">0</b></div><div class="bg-red-100 rounded p-2">Absent <b id="cA">0</b></div>
+<div class="bg-amber-100 rounded p-2">Pending <b id="cV">0</b></div><div class="bg-slate-200 rounded p-2">Unreviewed <b id="cU">0</b></div></div>
+<div class="bg-white rounded-xl shadow p-3 mb-3 space-y-2">
+<div class="flex flex-wrap items-center gap-2"><span id="mic" class="px-2 py-1 rounded bg-slate-200 text-sm">Mic idle</span><span id="msg" class="text-sm text-slate-600"></span></div>
+<div class="flex flex-wrap gap-2">
+{% if data.mode!='manual' %}<button id="bStart" class="bg-indigo-600 text-white rounded px-4 py-2">▶ Start / Resume</button><button id="bPause" class="bg-amber-500 text-white rounded px-4 py-2">⏸ Pause</button>
+{% if data.mode=='call' %}<button id="bSkip" class="bg-slate-500 text-white rounded px-3 py-2">Skip</button><button id="bRep" class="bg-slate-500 text-white rounded px-3 py-2">Repeat</button>{% endif %}
+<button id="bStop" class="bg-red-600 text-white rounded px-4 py-2">⏹ Stop & Save</button>{% endif %}
+<button id="bAll" class="bg-white border rounded px-3 py-2">Mark All Present</button><button id="bRest" class="bg-white border rounded px-3 py-2">Mark Remaining Absent</button>
+<button data-act="draft" class="act bg-white border rounded px-3 py-2">Save Draft</button>
+<button data-act="submit" class="act bg-emerald-600 text-white rounded px-3 py-2">Submit for Review</button>
+{% if current_user.role=='teacher' %}<button data-act="finalize" class="act bg-indigo-800 text-white rounded px-3 py-2">Finalize</button><button data-act="reopen" class="act bg-white border border-red-400 text-red-600 rounded px-3 py-2">Reopen…</button>{% endif %}
+</div></div>
+<input id="q" placeholder="Search roll or name (↑/↓ select row, P / A / V to mark)" class="w-full border rounded p-2 mb-2 bg-white">
+<div class="bg-white rounded-xl shadow overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-left"><tr><th class="p-2">Roll</th><th>Name</th><th>Status</th><th>Action</th></tr></thead><tbody id="tb"></tbody></table></div>
+<script>window.ATT={{ data|tojson }};</script><script src="{{ url_for('static',filename='js/attendance.js') }}"></script>
+{% endblock %}

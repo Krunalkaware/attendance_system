@@ -1,0 +1,27 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="csrf" content="{{ csrf_token() }}"><title>MCA Attendance</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}"></head>
+<body class="bg-slate-100 text-slate-800">
+{% if current_user.is_authenticated %}
+<div class="flex min-h-screen">
+<aside id="sb" class="fixed inset-y-0 left-0 z-30 w-60 -translate-x-full md:translate-x-0 md:static bg-indigo-900 text-white p-4 transition-transform space-y-1">
+ <div class="text-lg font-bold mb-4">🎓 MCA Attendance</div>
+ {% set links=[('dashboard.home','Dashboard')] %}
+ {% if current_user.role!='student' %}{% set links=links+[('attendance.start','Start Attendance'),('students.students','Students'),('reports.reports','Reports')] %}{% endif %}
+ {% for e,l in links %}<a href="{{ url_for(e) }}" class="block px-3 py-2 rounded hover:bg-indigo-700">{{ l }}</a>{% endfor %}
+ <a href="{{ url_for('auth.logout') }}" class="block px-3 py-2 rounded hover:bg-indigo-700 mt-6">Logout</a>
+</aside>
+<div class="flex-1 min-w-0">
+ <header class="bg-white shadow px-4 py-3 flex items-center gap-3">
+  <button class="md:hidden text-2xl" aria-label="Menu" onclick="document.getElementById('sb').classList.toggle('-translate-x-full')">☰</button>
+  <span class="font-semibold">{{ current_user.name }}</span>
+  <span class="text-xs bg-indigo-100 text-indigo-700 rounded px-2 py-0.5 uppercase">{{ current_user.role }}</span>
+ </header>
+ <main class="p-4 md:p-6 max-w-6xl mx-auto">
+{% endif %}
+{% for c,m in get_flashed_messages(with_categories=true) %}
+<div class="mb-3 p-3 rounded {{ 'bg-red-100 text-red-800' if c=='error' else 'bg-green-100 text-green-800' }}">{{ m }}</div>{% endfor %}
+{% block body %}{% endblock %}
+{% if current_user.is_authenticated %}</main></div></div>{% endif %}
+</body></html>

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}{% block body %}
+<form method="post" class="bg-white p-5 rounded-xl shadow max-w-lg space-y-3">
+<h1 class="text-xl font-bold">Start Attendance</h1><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<label class="block text-sm">Subject<input name="subject" list="sl" required class="w-full border rounded p-2 mt-1"></label>
+<datalist id="sl">{% for s in subjects %}<option value="{{ s.name }}">{% endfor %}</datalist>
+<div class="grid grid-cols-2 gap-3"><label class="block text-sm">Lecture no.<input name="lecture" type="number" min="1" required class="w-full border rounded p-2 mt-1"></label>
+<label class="block text-sm">Date<input name="date" type="date" value="{{ today }}" required class="w-full border rounded p-2 mt-1"></label></div>
+<fieldset class="space-y-1">{% for k,v in MODES.items() %}<label class="flex gap-2 items-center"><input type="radio" name="mode" value="{{ k }}" {{ 'checked' if k==mode }}> {{ v }}</label>{% endfor %}</fieldset>
+<button class="w-full bg-indigo-600 text-white rounded p-3 font-semibold">Start Attendance</button></form>
+{% endblock %}

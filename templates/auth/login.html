@@ -1,0 +1,8 @@
+{% extends 'base.html' %}{% block body %}
+<div class="min-h-screen flex items-center justify-center p-4"><form method="post" class="bg-white p-6 rounded-xl shadow w-full max-w-sm space-y-3">
+<h1 class="text-xl font-bold">🎓 MCA Attendance Login</h1>
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<label class="block text-sm">Username<input name="username" required autofocus class="w-full border rounded p-2 mt-1"></label>
+<label class="block text-sm">Password<input name="password" type="password" required class="w-full border rounded p-2 mt-1"></label>
+<button class="w-full bg-indigo-600 text-white rounded p-2 font-semibold">Sign in</button></form></div>
+{% endblock %}

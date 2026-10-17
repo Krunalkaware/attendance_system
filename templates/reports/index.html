@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block body %}
+<form class="bg-white p-3 rounded-xl shadow flex flex-wrap gap-2 mb-4 items-end">
+<select name="subject" class="border rounded p-2"><option value="">All subjects</option>{% for s in subjects %}<option value="{{ s.id }}" {{ 'selected' if f.subject==s.id|string }}>{{ s.name }}</option>{% endfor %}</select>
+<input type="date" name="from" value="{{ f.get('from','') }}" class="border rounded p-2"><input type="date" name="to" value="{{ f.get('to','') }}" class="border rounded p-2">
+<input name="q" placeholder="Roll / name" value="{{ f.get('q','') }}" class="border rounded p-2">
+<button class="bg-indigo-600 text-white rounded px-4 py-2">Filter</button>
+<a class="bg-emerald-600 text-white rounded px-4 py-2" href="{{ url_for('reports.reports_csv',**f) }}">Export CSV</a></form>
+<h2 class="font-semibold mb-2">Attendance % (finalized sessions only)</h2>
+<div class="bg-white rounded-xl shadow overflow-x-auto mb-6"><table class="w-full text-sm"><tr class="bg-slate-50 text-left"><th class="p-2">Roll</th><th>Name</th><th>Present/Total</th><th>%</th></tr>
+{% for r,d in pc %}<tr class="border-t"><td class="p-2">{{ r }}</td><td>{{ d.name }}</td><td>{{ d['Present'] }}/{{ d.n }}</td><td>{{ (100*d['Present']/d.n)|round(1) }}%</td></tr>{% endfor %}</table></div>
+<h2 class="font-semibold mb-2">Records</h2>
+<div class="bg-white rounded-xl shadow overflow-x-auto"><table class="w-full text-sm"><tr class="bg-slate-50 text-left"><th class="p-2">Date</th><th>Subject</th><th>Lec</th><th>Roll</th><th>Name</th><th>Status</th><th>Session</th></tr>
+{% for s,r,st in rows %}<tr class="border-t"><td class="p-2">{{ s.date }}</td><td>{{ s.subject.name }}</td><td>{{ s.lecture }}</td><td>{{ st.roll }}</td><td>{{ st.name }}</td><td>{{ r.status }}</td>
+<td class="{{ '' if s.status=='finalized' else 'text-amber-600' }}">{{ s.status }}</td></tr>{% endfor %}</table></div>
+{% endblock %}

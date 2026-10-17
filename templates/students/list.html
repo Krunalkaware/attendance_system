@@ -1,0 +1,20 @@
+{% extends 'base.html' %}{% block body %}
+{% if current_user.role=='teacher' %}
+<div class="grid md:grid-cols-2 gap-3 mb-4">
+<form method="post" action="{{ url_for('students.student_upload') }}" enctype="multipart/form-data" class="bg-white p-4 rounded-xl shadow space-y-2">
+<h2 class="font-semibold">Upload CSV (roll,name,email)</h2><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<input type="file" name="file" accept=".csv" required class="text-sm"><button class="bg-indigo-600 text-white rounded px-3 py-1">Import</button></form>
+<form method="post" action="{{ url_for('students.student_add') }}" class="bg-white p-4 rounded-xl shadow grid grid-cols-2 gap-2">
+<h2 class="font-semibold col-span-2">Add student</h2><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<input name="roll" placeholder="Roll" required class="border rounded p-2"><input name="name" placeholder="Full name" required class="border rounded p-2">
+<input name="email" placeholder="Email (optional)" class="border rounded p-2"><button class="bg-indigo-600 text-white rounded">Add</button></form></div>
+<form method="post" action="{{ url_for('students.student_delete_all') }}" class="mb-3" onsubmit="return confirm('Delete ALL students and ALL attendance data permanently? This cannot be undone.')">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="bg-red-600 text-white rounded px-3 py-2 text-sm">🗑 Delete all students</button></form>{% endif %}
+<div class="bg-white rounded-xl shadow overflow-x-auto"><table class="w-full text-sm"><tr class="bg-slate-50 text-left"><th class="p-2">Roll</th><th>Name / Email</th><th>Active</th>{% if current_user.role=='teacher' %}<th></th>{% endif %}</tr>
+{% for s in rows %}<tr class="border-t"><td class="p-2">{{ s.roll }}</td>
+{% if current_user.role=='teacher' %}<td><form method="post" action="{{ url_for('students.student_edit',i=s.id) }}" class="flex gap-1">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input name="name" value="{{ s.name }}" class="border rounded p-1 flex-1 min-w-0"><input name="email" value="{{ s.email or '' }}" class="border rounded p-1 flex-1 min-w-0"><button class="px-2 text-indigo-600">Save</button></form></td>
+<td><form method="post" action="{{ url_for('students.student_edit',i=s.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="toggle" value="1"><button class="{{ 'text-green-600' if s.active else 'text-red-600' }}">{{ 'Active' if s.active else 'Inactive' }}</button></form></td>
+<td><form method="post" action="{{ url_for('students.student_delete',i=s.id) }}" onsubmit="return confirm('Delete {{ s.name|e }} and all their attendance records permanently?')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="text-red-600">Delete</button></form></td>
+{% else %}<td>{{ s.name }} {{ s.email or '' }}</td><td>{{ 'Active' if s.active else 'Inactive' }}</td>{% endif %}</tr>{% endfor %}</table></div>
+{% endblock %}
